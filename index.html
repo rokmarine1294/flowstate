@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Flowstate Agency — Client Onboarding Form">
+<title>Flowstate Agency — Client Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-row">
+    <div class="logo-mark">
+      <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <path d="M4 13C4 8 8 4 13 4C18 4 22 8 22 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 13C8 10.5 10.5 8.5 13 8.5C15.5 8.5 18 10.5 18 13" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
+        <circle cx="13" cy="18" r="3" fill="white"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">Flowstate</div>
+      <span class="logo-sub">Agency</span>
+    </div>
+  </div>
+  <p class="hero-label">Client Onboarding</p>
+  <h1 class="hero-title">Let's get your system <em>live.</em></h1>
+  <p class="hero-body">This takes about 5 minutes. Your answers tell us everything we need to build and configure your automation system. Once submitted, we'll have everything running within 48 hours.</p>
+</header>
+
+<div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressBar" style="width:20%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Step 1 of 5</div>
+</div>
+
+<main class="form-card">
+
+  <!-- ── Step 1: Business basics ── -->
+  <section class="section active" id="step1" aria-label="Step 1: Your business">
+    <p class="section-num">01 / 05</p>
+    <h2 class="section-title">Your business</h2>
+    <p class="section-desc">Basic information about your practice or business.</p>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="business_name">Business name <span class="required" aria-label="required">*</span></label>
+        <input type="text" id="business_name" name="business_name" placeholder="e.g. Smile Sydney Dental" autocomplete="organization">
+        <span class="error-msg" id="err_business_name" role="alert">Please enter your business name</span>
+      </div>
+      <div class="field">
+        <label for="contact_name">Your name <span class="required" aria-label="required">*</span></label>
+        <input type="text" id="contact_name" name="contact_name" placeholder="Owner / principal name" autocomplete="name">
+        <span class="error-msg" id="err_contact_name" role="alert">Please enter your name</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="contact_email">Email address <span class="required" aria-label="required">*</span></label>
+        <input type="email" id="contact_email" name="contact_email" placeholder="your@email.com.au" autocomplete="email">
+        <span class="error-msg" id="err_contact_email" role="alert">Please enter a valid email address</span>
+      </div>
+      <div class="field">
+        <label for="business_phone">Business phone <span class="required" aria-label="required">*</span></label>
+        <input type="tel" id="business_phone" name="business_phone" placeholder="02 9XXX XXXX" autocomplete="tel">
+        <span class="error-msg" id="err_business_phone" role="alert">Please enter your business phone number</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="service_area">Suburb / service area <span class="required" aria-label="required">*</span></label>
+        <input type="text" id="service_area" name="service_area" placeholder="e.g. Surry Hills, Sydney NSW">
+        <span class="error-msg" id="err_service_area" role="alert">Please enter your service area</span>
+      </div>
+      <div class="field">
+        <label for="niche">Industry <span class="required" aria-label="required">*</span></label>
+        <select id="niche" name="niche">
+          <option value="" disabled selected>Select your industry</option>
+          <option value="dental">Dental practice</option>
+          <option value="medical">Medical / GP</option>
+          <option value="physio">Physiotherapy</option>
+          <option value="chiro">Chiropractic</option>
+          <option value="psychology">Psychology / counselling</option>
+          <option value="legal">Legal services</option>
+          <option value="accounting">Accounting / finance</option>
+          <option value="plumbing">Plumbing</option>
+          <option value="electrical">Electrical</option>
+          <option value="building">Building / construction</option>
+          <option value="real_estate">Real estate</option>
+          <option value="beauty">Beauty / aesthetics</option>
+          <option value="fitness">Fitness / personal training</option>
+          <option value="other">Other</option>
+        </select>
+        <span class="error-msg" id="err_niche" role="alert">Please select your industry</span>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" onclick="nextStep(1)" type="button">
+        Continue
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Step 2: Contact & hours ── -->
+  <section class="section" id="step2" aria-label="Step 2: Contact and hours">
+    <p class="section-num">02 / 05</p>
+    <h2 class="section-title">Contact & hours</h2>
+    <p class="section-desc">How customers reach you and when it's OK to contact them.</p>
+
+    <div class="field">
+      <label for="website">Website URL</label>
+      <input type="url" id="website" name="website" placeholder="https://yourbusiness.com.au" autocomplete="url">
+      <p class="hint">We'll use this to embed enquiry capture on your contact form.</p>
+    </div>
+
+    <div class="field">
+      <label for="booking_link">Online booking link</label>
+      <input type="url" id="booking_link" name="booking_link" placeholder="https://calendly.com/... or HotDoc / Cliniko link">
+      <p class="hint">Appears in every automated follow-up message. Leave blank if you don't have one yet.</p>
+    </div>
+
+    <div class="field">
+      <label for="notify_phone">Practice manager mobile <span class="required" aria-label="required">*</span></label>
+      <input type="tel" id="notify_phone" name="notify_phone" placeholder="04XX XXX XXX" autocomplete="tel">
+      <p class="hint">When a patient replies with a question, we forward it here via SMS. Must be an Australian mobile.</p>
+      <span class="error-msg" id="err_notify_phone" role="alert">Please enter a mobile number for reply forwarding</span>
+    </div>
+
+    <div class="field">
+      <label>Customer contact hours <span class="required" aria-label="required">*</span></label>
+      <div class="hours-row">
+        <select id="hours_start" name="hours_start" aria-label="Contact hours start">
+          <option value="6">6:00am</option>
+          <option value="7">7:00am</option>
+          <option value="8" selected>8:00am</option>
+          <option value="9">9:00am</option>
+          <option value="10">10:00am</option>
+        </select>
+        <span class="hours-sep" aria-hidden="true">to</span>
+        <select id="hours_end" name="hours_end" aria-label="Contact hours end">
+          <option value="17">5:00pm</option>
+          <option value="18">6:00pm</option>
+          <option value="19">7:00pm</option>
+          <option value="20">8:00pm</option>
+          <option value="21" selected>9:00pm</option>
+          <option value="22">10:00pm</option>
+        </select>
+      </div>
+      <p class="hint">Automated messages only send within these hours. Outside hours they queue for the next morning.</p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep(2)" type="button">Back</button>
+      <button class="btn-next" onclick="nextStep(2)" type="button">
+        Continue
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Step 3: Channels & value ── -->
+  <section class="section" id="step3" aria-label="Step 3: Enquiry channels">
+    <p class="section-num">03 / 05</p>
+    <h2 class="section-title">Where your enquiries come from</h2>
+    <p class="section-desc">Select every channel where customers currently reach out. We'll connect each one to the system.</p>
+
+    <div class="field">
+      <label>Active enquiry channels <span class="required" aria-label="required">*</span></label>
+      <div class="check-grid" id="channels_grid" role="group" aria-label="Select all active enquiry channels">
+        <div class="check-item" onclick="toggleCheck(this,'web_form')" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="check-box" aria-hidden="true"></div>
+          <span class="check-label">Website contact form</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this,'missed_call')" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="check-box" aria-hidden="true"></div>
+          <span class="check-label">Phone / missed calls</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this,'facebook')" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="check-box" aria-hidden="true"></div>
+          <span class="check-label">Facebook messages</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this,'instagram')" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="check-box" aria-hidden="true"></div>
+          <span class="check-label">Instagram DMs</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this,'google_business')" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="check-box" aria-hidden="true"></div>
+          <span class="check-label">Google Business messages</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this,'referral')" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="check-box" aria-hidden="true"></div>
+          <span class="check-label">Referrals / word of mouth</span>
+        </div>
+      </div>
+      <span class="error-msg" id="err_channels" role="alert">Please select at least one channel</span>
+    </div>
+
+    <div class="field">
+      <label for="avg_value">Average customer value (AUD) <span class="required" aria-label="required">*</span></label>
+      <input type="number" id="avg_value" name="avg_value" placeholder="e.g. 1200" min="1">
+      <p class="hint">Typical revenue from one new customer on their first visit or job. Used to calculate your weekly ROI in reports.</p>
+      <span class="error-msg" id="err_avg_value" role="alert">Please enter an approximate customer value</span>
+    </div>
+
+    <div class="field">
+      <label for="google_review_link">Google Business Profile link</label>
+      <input type="url" id="google_review_link" name="google_review_link" placeholder="https://g.page/r/...">
+      <p class="hint">Optional. We use this to drive review requests in follow-up messages after a booking is confirmed.</p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep(3)" type="button">Back</button>
+      <button class="btn-next" onclick="nextStep(3)" type="button">
+        Continue
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Step 4: Tone & qualification ── -->
+  <section class="section" id="step4" aria-label="Step 4: Tone and priorities">
+    <p class="section-num">04 / 05</p>
+    <h2 class="section-title">Your tone & priorities</h2>
+    <p class="section-desc">This shapes how every automated message sounds and what we prioritise responding to first.</p>
+
+    <div class="field">
+      <label>Communication style <span class="required" aria-label="required">*</span></label>
+      <div class="radio-group" role="radiogroup" aria-label="Select communication style">
+        <div class="radio-item" onclick="selectRadio(this,'warm')" role="radio" aria-checked="false" tabindex="0">
+          <div class="radio-dot" aria-hidden="true"></div>
+          <div>
+            <div class="radio-label">Warm &amp; friendly</div>
+            <p class="hint" style="margin-top:3px">Conversational, uses contractions, signs off "Talk soon"</p>
+          </div>
+        </div>
+        <div class="radio-item" onclick="selectRadio(this,'formal')" role="radio" aria-checked="false" tabindex="0">
+          <div class="radio-dot" aria-hidden="true"></div>
+          <div>
+            <div class="radio-label">Formal &amp; professional</div>
+            <p class="hint" style="margin-top:3px">No contractions, measured language, signs off "Kind regards"</p>
+          </div>
+        </div>
+      </div>
+      <span class="error-msg" id="err_tone" role="alert">Please select a communication style</span>
+    </div>
+
+    <div class="field">
+      <label for="urgent_signals">What makes an enquiry urgent? <span class="required" aria-label="required">*</span></label>
+      <textarea id="urgent_signals" name="urgent_signals" placeholder="e.g. tooth pain, can't eat, swelling, emergency, flooding, no hot water, gas leak, can't walk..." rows="3"></textarea>
+      <p class="hint">Plain language is fine. These signals tell the AI to score a lead as top priority and alert us immediately.</p>
+      <span class="error-msg" id="err_urgent" role="alert">Please describe what counts as urgent for your business</span>
+    </div>
+
+    <div class="field">
+      <label for="exclusion_rules">Any enquiries you do NOT want contacted?</label>
+      <textarea id="exclusion_rules" name="exclusion_rules" placeholder="e.g. outside Northern Beaches, commercial jobs only, under 18s..." rows="3"></textarea>
+      <p class="hint">Optional. The AI will deprioritise these and flag them rather than sending an automated message.</p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep(4)" type="button">Back</button>
+      <button class="btn-next" onclick="nextStep(4)" type="button">
+        Review &amp; submit
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Step 5: Review & submit ── -->
+  <section class="section" id="step5" aria-label="Step 5: Review and submit">
+    <p class="section-num">05 / 05</p>
+    <h2 class="section-title">Review &amp; submit</h2>
+    <p class="section-desc">Check your details below. Once submitted, Jae will configure your system and be in touch within 24 hours.</p>
+
+    <div id="review_content" aria-live="polite"></div>
+
+    <div class="field" style="margin-top:20px">
+      <label for="extra_notes">Anything else we should know?</label>
+      <textarea id="extra_notes" name="extra_notes" placeholder="Special instructions, specific requests, questions for the setup call..." rows="3"></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep(5)" type="button">Back</button>
+      <button class="btn-next btn-submit" onclick="submitForm()" id="submitBtn" type="button">
+        Submit &amp; go live
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Success screen ── -->
+<div class="success-screen" id="successScreen" aria-live="assertive" aria-label="Form submitted successfully">
+  <div class="success-icon" aria-hidden="true">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M5 14l7 7 11-11" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h2 class="success-title">You're all set.</h2>
+  <p class="success-body">We've received your details and will have your automation system configured and live within 48 hours. Jae will be in touch to confirm everything is working.</p>
+  <div class="success-detail" id="successDetail"></div>
+</div>
+
+<script src="form.js"></script>
+</body>
+</html>
