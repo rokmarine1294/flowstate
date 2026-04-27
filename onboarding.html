@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Onboarding — Flowstate Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B2A;
+  --blue:#2563EB;
+  --sky:#38BDF8;
+  --emerald:#10B981;
+  --offwhite:#F8FAFC;
+  --charcoal:#1E293B;
+  --slate:#475569;
+  --border:#E2E8F0;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--charcoal);background:var(--offwhite);-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{background:var(--navy);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:var(--sans);font-weight:600;font-size:0.95rem;color:#F8FAFC}
+
+/* HEADER */
+.page-header{background:var(--navy);padding:3rem 2rem 3.5rem;text-align:center}
+.page-header .eyebrow{font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--sky);margin-bottom:1rem;display:block}
+.page-header h1{font-family:var(--serif);font-size:2.4rem;color:#F8FAFC;font-weight:400;margin-bottom:0.75rem}
+.page-header p{color:#94A3B8;font-size:1rem;max-width:500px;margin:0 auto}
+
+/* FORM WRAP */
+.form-wrap{max-width:720px;margin:0 auto;padding:3rem 2rem 5rem}
+
+/* SECTION */
+.form-section{background:#fff;border:1px solid var(--border);border-radius:14px;padding:2rem;margin-bottom:1.5rem}
+.form-section-header{display:flex;align-items:center;gap:0.875rem;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.section-num{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.8rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-num.blue{background:var(--blue)}
+.section-num.sky{background:#0ea5e9}
+.section-num.emerald{background:var(--emerald)}
+.section-num.amber{background:#F59E0B}
+.form-section-header div h3{font-weight:600;font-size:1rem;color:var(--navy)}
+.form-section-header div p{font-size:0.82rem;color:var(--slate);margin-top:2px}
+
+/* FIELDS */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.field-grid.single{grid-template-columns:1fr}
+.field-grid.thirds{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.field-grid,.field-grid.thirds{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:0.375rem}
+.field label{font-size:0.82rem;font-weight:500;color:var(--charcoal)}
+.field label .req{color:#EF4444;margin-left:2px}
+.field label .opt{font-size:0.72rem;font-weight:400;color:#94A3B8;margin-left:4px}
+.field input,.field select,.field textarea{
+  font-family:var(--sans);font-size:0.9rem;color:var(--charcoal);
+  background:#F8FAFC;border:1.5px solid var(--border);border-radius:8px;
+  padding:0.625rem 0.875rem;transition:border-color 0.2s,box-shadow 0.2s;outline:none;width:100%
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,0.1);background:#fff
+}
+.field textarea{resize:vertical;min-height:90px;line-height:1.6}
+.field .hint{font-size:0.75rem;color:#94A3B8;line-height:1.5}
+
+/* CHECKBOX GROUP */
+.checkbox-group{display:grid;grid-template-columns:1fr 1fr;gap:0.625rem}
+@media(max-width:480px){.checkbox-group{grid-template-columns:1fr}}
+.checkbox-item{display:flex;align-items:center;gap:0.625rem;padding:0.625rem 0.875rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;background:#F8FAFC}
+.checkbox-item:hover{border-color:var(--blue);background:#EFF6FF}
+.checkbox-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);flex-shrink:0}
+.checkbox-item span{font-size:0.875rem;color:var(--charcoal)}
+.checkbox-item.checked{border-color:var(--blue);background:#EFF6FF}
+
+/* RADIO GROUP */
+.radio-group{display:flex;gap:0.75rem;flex-wrap:wrap}
+.radio-item{display:flex;align-items:center;gap:0.5rem;padding:0.625rem 1.25rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;background:#F8FAFC}
+.radio-item:hover{border-color:var(--blue)}
+.radio-item input[type=radio]{accent-color:var(--blue)}
+.radio-item span{font-size:0.875rem;color:var(--charcoal);font-weight:500}
+.radio-item.selected{border-color:var(--blue);background:#EFF6FF}
+
+/* ALERT BOX */
+.alert{background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:8px;padding:0.875rem 1rem;font-size:0.82rem;color:#92400E;line-height:1.6;margin-bottom:1.25rem}
+.alert strong{color:#78350F}
+
+/* SUBMIT */
+.submit-wrap{text-align:center;margin-top:2rem}
+.btn-submit{background:var(--emerald);color:#fff;font-family:var(--sans);font-weight:600;font-size:1rem;padding:0.9rem 2.5rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-submit:hover{background:#0ea271;transform:translateY(-1px)}
+.submit-note{font-size:0.8rem;color:#94A3B8;margin-top:0.875rem}
+
+/* SUCCESS */
+#success{display:none;text-align:center;padding:4rem 2rem}
+#success .icon{font-size:3rem;margin-bottom:1rem}
+#success h2{font-family:var(--serif);font-size:2rem;color:var(--navy);margin-bottom:0.75rem;font-weight:400}
+#success p{color:var(--slate);font-size:1rem;max-width:420px;margin:0 auto}
+
+footer{background:var(--charcoal);padding:1.5rem;text-align:center}
+footer p{font-size:0.78rem;color:#64748B}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://flowstateau.com" class="logo">
+    <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="3" fill="#10B981"/>
+      <path d="M14 6 A8 8 0 0 1 22 14" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M14 3 A11 11 0 0 1 25 14" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+      <path d="M14 0.5 A13.5 13.5 0 0 1 27.5 14" stroke="#2563EB" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.4"/>
+    </svg>
+    <span class="logo-text">Flowstate Agency</span>
+  </a>
+</nav>
+
+<div class="page-header">
+  <span class="eyebrow">Client onboarding</span>
+  <h1>Let's get you set up.</h1>
+  <p>Fill in the details below and we'll have your automation system configured and live within 48 hours.</p>
+</div>
+
+<div class="form-wrap">
+  <form id="onboarding-form">
+
+    <!-- SECTION 1: BUSINESS BASICS -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <div class="section-num">1</div>
+        <div><h3>Business basics</h3><p>Your practice details for system configuration and reporting.</p></div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>Business name <span class="req">*</span></label>
+          <input type="text" name="business_name" placeholder="e.g. Bondi Dental Studio" required>
+        </div>
+        <div class="field">
+          <label>Owner / principal name <span class="req">*</span></label>
+          <input type="text" name="contact_name" placeholder="e.g. Dr. Sarah Chen" required>
+        </div>
+        <div class="field">
+          <label>Owner email <span class="req">*</span></label>
+          <input type="email" name="contact_email" placeholder="Weekly reports go here" required>
+          <span class="hint">Your weekly performance report will be sent to this address every Monday.</span>
+        </div>
+        <div class="field">
+          <label>Business phone <span class="req">*</span></label>
+          <input type="tel" name="business_phone" placeholder="e.g. 02 9123 4567" required>
+        </div>
+        <div class="field">
+          <label>Suburb / service area <span class="req">*</span></label>
+          <input type="text" name="service_area" placeholder="e.g. Bondi, Eastern Suburbs Sydney" required>
+        </div>
+        <div class="field">
+          <label>Industry / niche <span class="req">*</span></label>
+          <select name="niche" required>
+            <option value="" disabled selected>Select your industry</option>
+            <option value="dental">Dental</option>
+            <option value="medical">Medical / GP</option>
+            <option value="physio">Physiotherapy</option>
+            <option value="legal">Legal</option>
+            <option value="plumbing">Plumbing</option>
+            <option value="electrical">Electrical</option>
+            <option value="hvac">HVAC / Air Conditioning</option>
+            <option value="real_estate">Real Estate</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Website URL <span class="req">*</span></label>
+          <input type="url" name="website_url" placeholder="https://yourdomain.com.au" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: AUTOMATION CONFIG -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <div class="section-num blue">2</div>
+        <div><h3>Automation configuration</h3><p>Settings that control how your system responds to enquiries.</p></div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>Online booking link <span class="opt">(optional)</span></label>
+          <input type="url" name="booking_link" placeholder="https://hotdoc.com.au/your-practice">
+          <span class="hint">HotDoc, Cliniko, Calendly, or any direct booking URL. Included in follow-up messages.</span>
+        </div>
+        <div class="field">
+          <label>Practice manager mobile <span class="req">*</span></label>
+          <input type="tel" name="notify_phone" placeholder="e.g. 0412 345 678" required>
+          <span class="hint">Urgent lead alerts and patient replies are forwarded here instantly.</span>
+        </div>
+        <div class="field">
+          <label>Contact hours start <span class="req">*</span></label>
+          <select name="contact_hours_start" required>
+            <option value="" disabled selected>Select time</option>
+            <option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option>
+            <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Contact hours end <span class="req">*</span></label>
+          <select name="contact_hours_end" required>
+            <option value="" disabled selected>Select time</option>
+            <option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option>
+            <option>8:00 PM</option><option>9:00 PM</option><option>10:00 PM</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Average customer value (AUD) <span class="opt">(optional)</span></label>
+          <input type="number" name="avg_customer_value" placeholder="e.g. 2500">
+          <span class="hint">Used to calculate estimated revenue in your weekly report.</span>
+        </div>
+        <div class="field">
+          <label>Google Business Profile link <span class="opt">(optional)</span></label>
+          <input type="url" name="google_review_link" placeholder="https://g.page/your-practice">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: CHANNELS -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <div class="section-num sky">3</div>
+        <div><h3>Channels</h3><p>Where your enquiries currently come from.</p></div>
+      </div>
+      <div class="field field-grid single" style="margin-bottom:0">
+        <label>Which channels do you currently receive enquiries from? <span class="req">*</span></label>
+        <div class="checkbox-group" id="channels-group">
+          <label class="checkbox-item"><input type="checkbox" name="channels" value="website_form"> <span>Website contact form</span></label>
+          <label class="checkbox-item"><input type="checkbox" name="channels" value="email"> <span>Email</span></label>
+          <label class="checkbox-item"><input type="checkbox" name="channels" value="missed_calls"> <span>Missed calls</span></label>
+          <label class="checkbox-item"><input type="checkbox" name="channels" value="facebook"> <span>Facebook</span></label>
+          <label class="checkbox-item"><input type="checkbox" name="channels" value="instagram"> <span>Instagram</span></label>
+          <label class="checkbox-item"><input type="checkbox" name="channels" value="google_business"> <span>Google Business Profile</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: TONE & QUALIFICATION -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <div class="section-num emerald">4</div>
+        <div><h3>Tone &amp; qualification</h3><p>How your system communicates and what it prioritises.</p></div>
+      </div>
+      <div class="field field-grid single" style="margin-bottom:1.25rem">
+        <label>Communication style <span class="req">*</span></label>
+        <div class="radio-group" id="tone-group">
+          <label class="radio-item"><input type="radio" name="tone_profile" value="warm" required> <span>Warm &amp; friendly</span></label>
+          <label class="radio-item"><input type="radio" name="tone_profile" value="formal"> <span>Professional &amp; formal</span></label>
+        </div>
+      </div>
+      <div class="field-grid single">
+        <div class="field">
+          <label>What makes an enquiry urgent for your practice? <span class="req">*</span></label>
+          <textarea name="urgency_rules" placeholder="e.g. Tooth pain, broken tooth, dental emergency, severe swelling, lost filling" required></textarea>
+          <span class="hint">Plain language is fine. This trains the AI to flag high-priority enquiries immediately.</span>
+        </div>
+        <div class="field">
+          <label>Any enquiries you don't want contacted? <span class="opt">(optional)</span></label>
+          <textarea name="exclusion_rules" placeholder="e.g. Outside our service area, commercial clients only, referrals only for implants"></textarea>
+          <span class="hint">The system will flag these rather than sending an automated reply.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: BOOKING SYSTEM -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <div class="section-num amber">5</div>
+        <div><h3>Booking system</h3><p>For current and future automation integrations.</p></div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>Booking system you use <span class="req">*</span></label>
+          <select name="booking_system" id="booking-system-select" required>
+            <option value="" disabled selected>Select your system</option>
+            <option value="cliniko">Cliniko</option>
+            <option value="hotdoc">HotDoc</option>
+            <option value="health_engine">HealthEngine</option>
+            <option value="nookal">Nookal</option>
+            <option value="manual">Manual / phone only</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field" id="cliniko-api-field" style="display:none">
+          <label>Cliniko API key <span class="opt">(optional — add later)</span></label>
+          <input type="text" name="cliniko_api_key" placeholder="Leave blank — we'll request this separately">
+          <span class="hint">You can provide this after onboarding. Required for direct booking automation.</span>
+        </div>
+        <div class="field" id="other-system-field" style="display:none">
+          <label>Please specify your booking system</label>
+          <input type="text" name="booking_system_other" placeholder="e.g. Genie, MedicalDirector, custom">
+        </div>
+      </div>
+    </div>
+
+    <!-- AGREEMENT -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <div class="section-num" style="background:#6366F1">6</div>
+        <div><h3>Confirmation</h3><p>Final step before we start building your system.</p></div>
+      </div>
+      <div class="alert">
+        <strong>Before submitting:</strong> By completing this form you confirm that you have agreed to the Flowstate Agency service terms, including the setup fee and monthly retainer as outlined in your onboarding call.
+      </div>
+      <div class="field-grid single">
+        <div class="field">
+          <label>Full name (confirmation) <span class="req">*</span></label>
+          <input type="text" name="confirm_name" placeholder="Type your full name to confirm" required>
+        </div>
+        <label class="checkbox-item" style="margin-top:0.25rem">
+          <input type="checkbox" name="terms_agreed" id="terms-check" required>
+          <span>I confirm the above details are accurate and I agree to proceed with onboarding.</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="btn-submit">
+        Submit onboarding form
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="submit-note">We'll be in touch within 24 hours to confirm your setup timeline.</p>
+    </div>
+
+  </form>
+
+  <div id="success">
+    <div class="icon">✅</div>
+    <h2>You're in. Welcome to Flowstate.</h2>
+    <p>We've received your details and will be in touch within 24 hours to confirm your setup timeline. Your system will be live within 48 hours of confirmation.</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Flowstate Agency · Operated by Jae Park · <a href="mailto:jae@flowstateau.com" style="color:#94A3B8">jae@flowstateau.com</a></p>
+</footer>
+
+<script>
+// Checkbox visual state
+document.querySelectorAll('.checkbox-item input[type=checkbox]').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    cb.closest('.checkbox-item').classList.toggle('checked', cb.checked);
+  });
+});
+
+// Radio visual state
+document.querySelectorAll('.radio-item input[type=radio]').forEach(r=>{
+  r.addEventListener('change',()=>{
+    document.querySelectorAll('.radio-item').forEach(i=>i.classList.remove('selected'));
+    r.closest('.radio-item').classList.add('selected');
+  });
+});
+
+// Show Cliniko API field conditionally
+document.getElementById('booking-system-select').addEventListener('change', function(){
+  document.getElementById('cliniko-api-field').style.display = this.value === 'cliniko' ? 'flex' : 'none';
+  document.getElementById('other-system-field').style.display = this.value === 'other' ? 'flex' : 'none';
+});
+
+// Form submission → Formspree
+document.getElementById('onboarding-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = this.querySelector('.btn-submit');
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+
+  const data = new FormData(this);
+  // Collect checkboxes
+  const channels = [...document.querySelectorAll('input[name=channels]:checked')].map(c=>c.value);
+  data.set('channels', channels.join(', '));
+
+  try {
+    const res = await fetch('https://formspree.io/f/mqewoojd', {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+    if(res.ok){
+      document.getElementById('onboarding-form').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+      window.scrollTo({top: 0, behavior:'smooth'});
+    } else {
+      btn.textContent = 'Submit onboarding form';
+      btn.disabled = false;
+      alert('Something went wrong. Please email jae@flowstateau.com directly.');
+    }
+  } catch(err){
+    btn.textContent = 'Submit onboarding form';
+    btn.disabled = false;
+    alert('Something went wrong. Please email jae@flowstateau.com directly.');
+  }
+});
+</script>
+</body>
+</html>
