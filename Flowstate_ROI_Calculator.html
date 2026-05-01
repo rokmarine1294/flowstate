@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowstate Agency — ROI Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B2A;
+  --blue:#2563EB;
+  --blue-dark:#1D4ED8;
+  --sky:#38BDF8;
+  --green:#10B981;
+  --amber:#F59E0B;
+  --red:#EF4444;
+  --off-white:#F8FAFC;
+  --charcoal:#1E293B;
+  --slate:#64748B;
+  --border:#CBD5E1;
+  --light:#EFF6FF;
+  --grey:#F1F5F9;
+  --white:#FFFFFF;
+  --cream:#FFFBEB;
+  --mint:#F0FDF4;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--navy);
+  color:var(--off-white);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Header */
+.header{
+  background:var(--navy);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:20px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:32px;height:32px;
+  background:var(--blue);
+  border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-mark svg{width:18px;height:18px}
+.logo-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--off-white);line-height:1}
+.logo-sub{font-size:9px;font-weight:500;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:2px}
+.header-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--slate);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  padding:4px 10px;border-radius:99px;
+}
+
+/* Main layout */
+.main{
+  max-width:1200px;
+  margin:0 auto;
+  padding:40px 24px 80px;
+  display:grid;
+  grid-template-columns:1fr 1.6fr;
+  gap:24px;
+  align-items:start;
+}
+@media(max-width:720px){.main{grid-template-columns:1fr}}
+
+/* Hero */
+.hero{grid-column:1/-1;text-align:center;padding:20px 0 8px}
+.hero-label{font-size:11px;font-weight:500;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,38px);line-height:1.15;color:var(--off-white);margin-bottom:12px}
+.hero-title em{color:var(--sky);font-style:italic}
+.hero-sub{font-size:15px;color:#94A3B8;line-height:1.6;max-width:480px;margin:0 auto}
+
+/* Panel */
+.panel{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:28px;
+}
+.panel-title{
+  font-size:11px;font-weight:500;
+  color:var(--sky);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:20px;
+}
+
+/* Inputs */
+.input-group{margin-bottom:20px}
+.input-group:last-child{margin-bottom:0}
+.input-label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;color:#94A3B8;margin-bottom:8px;
+}
+.input-value{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;font-weight:500;color:var(--sky);
+}
+input[type=range]{
+  width:100%;
+  -webkit-appearance:none;appearance:none;
+  height:4px;border-radius:2px;
+  background:rgba(255,255,255,.1);
+  outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:var(--blue);
+  cursor:pointer;
+  transition:transform .15s;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.input-desc{font-size:11px;color:#475569;margin-top:5px;line-height:1.4}
+
+/* Divider */
+.divider{
+  grid-column:1/-1;
+  height:1px;background:rgba(255,255,255,.06);
+  margin:4px 0;
+}
+
+/* Results panel */
+.results-panel{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:28px;
+}
+
+/* Metric cards */
+.metric-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:20px;
+}
+.metric-card{
+  border-radius:10px;
+  padding:14px 16px;
+}
+.metric-card.primary{
+  background:rgba(37,99,235,.12);
+  border:1px solid rgba(37,99,235,.25);
+}
+.metric-card.secondary{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+.metric-label{font-size:11px;color:#64748B;margin-bottom:4px;line-height:1.3}
+.metric-card.primary .metric-label{color:#93C5FD}
+.metric-value{
+  font-family:'JetBrains Mono',monospace;
+  font-size:20px;font-weight:500;
+  color:var(--off-white);line-height:1;
+}
+.metric-card.primary .metric-value{color:var(--sky)}
+
+/* Breakdown */
+.breakdown{margin-bottom:20px}
+.breakdown-title{
+  font-size:10px;font-weight:500;
+  color:var(--slate);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:10px;
+}
+.breakdown-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:12px;
+}
+.breakdown-row:last-child{border-bottom:none;padding-top:10px}
+.breakdown-key{color:#64748B}
+.breakdown-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--off-white);
+}
+.breakdown-row.total .breakdown-key{color:var(--off-white);font-weight:500}
+.breakdown-row.total .breakdown-val{color:var(--sky);font-size:12px;font-weight:500}
+
+/* ROI badge */
+.roi-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:500;
+  padding:3px 8px;border-radius:99px;
+  margin-left:8px;
+}
+.roi-badge.green{background:rgba(16,185,129,.15);color:#34D399;border:1px solid rgba(16,185,129,.25)}
+.roi-badge.amber{background:rgba(245,158,11,.15);color:#FCD34D;border:1px solid rgba(245,158,11,.25)}
+.roi-badge.red{background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.25)}
+
+/* Verdict */
+.verdict{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-left:3px solid var(--blue);
+  border-radius:0 10px 10px 0;
+  padding:14px 16px;
+  margin-bottom:20px;
+}
+.verdict-title{font-size:11px;font-weight:500;color:var(--blue);letter-spacing:.04em;margin-bottom:6px}
+.verdict-body{font-size:13px;color:#94A3B8;line-height:1.6}
+.verdict-body strong{color:var(--off-white)}
+
+
+.pitch-body strong{color:var(--off-white);font-style:normal}
+
+/* CTA */
+.cta-row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:11px 20px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  cursor:pointer;border:none;
+  text-decoration:none;transition:all .2s;
+}
+.btn-primary{background:var(--blue);color:white}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px)}
+.btn-secondary{
+  background:transparent;color:#94A3B8;
+  border:1px solid rgba(255,255,255,.1);
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,.25);color:var(--off-white)}
+.btn svg{width:14px;height:14px}
+
+/* Assumptions note */
+.assumptions{
+  grid-column:1/-1;
+  text-align:center;
+  font-size:11px;color:#475569;
+  line-height:1.6;
+  padding-top:8px;
+}
+
+/* Print styles */
+@media print{
+  body{background:white;color:#1E293B}
+  .header{background:white;border-bottom:1px solid #CBD5E1}
+  .logo-name{color:#0D1B2A}
+  .panel,.results-panel{background:white;border:1px solid #CBD5E1}
+  .metric-card.primary{background:#EFF6FF;border-color:#93C5FD}
+  .metric-card.secondary{background:#F8FAFC;border-color:#CBD5E1}
+  .metric-card.primary .metric-value,.metric-card.primary .metric-label{color:#1D4ED8}
+  .verdict{border-left-color:#2563EB;background:#EFF6FF}
+  .pitch{background:#F0FDF4;border-color:#86EFAC}
+  .cta-row{display:none}
+  .header-tag{display:none}
+  input[type=range]{display:none}
+  .input-value{color:#2563EB}
+  body,.metric-value,.breakdown-val,.input-value{font-family:Arial,sans-serif}
+  .breakdown-key{color:#64748B}
+  .breakdown-row.total .breakdown-key{color:#0D1B2A}
+  .breakdown-row.total .breakdown-val,.pitch-title,.verdict-title{color:#2563EB}
+  .verdict-body,.pitch-body,.breakdown-key,.hero-sub,.input-label,.input-desc,.assumptions,.panel-title,.breakdown-title,.metric-label{color:#64748B}
+  .hero-title,.verdict-body strong,.pitch-body strong,.breakdown-row.total .breakdown-key,.logo-name{color:#0D1B2A}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 26 26" fill="none">
+        <path d="M4 13C4 8 8 4 13 4C18 4 22 8 22 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 13C8 10.5 10.5 8.5 13 8.5C15.5 8.5 18 10.5 18 13" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
+        <circle cx="13" cy="18" r="3" fill="white"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">Flowstate</div>
+      <span class="logo-sub">Agency</span>
+    </div>
+  </div>
+  <div class="header-tag">ROI Calculator v1.0</div>
+</header>
+
+<div class="main">
+
+  <div class="hero">
+    <p class="hero-label">Revenue Recovery Analysis</p>
+    <h1 class="hero-title">How much is your practice <em>losing</em> right now?</h1>
+    <p class="hero-sub">Enter your practice details below to see your estimated annual revenue leakage and projected recovery with Flowstate.</p>
+  </div>
+
+  <!-- Inputs panel -->
+  <div class="panel">
+    <p class="panel-title">Practice details</p>
+
+    <div class="input-group">
+      <div class="input-label">
+        Average patient value (AUD)
+        <span class="input-value" id="apv-out">$1,200</span>
+      </div>
+      <input type="range" id="apv" min="300" max="5000" step="50" value="1200">
+      <p class="input-desc">Typical revenue from one new patient on their first visit or treatment course.</p>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Weekly enquiries (estimated)
+        <span class="input-value" id="enq-out">20</span>
+      </div>
+      <input type="range" id="enq" min="5" max="150" step="1" value="20">
+      <p class="input-desc">Across all channels — website form, phone, email, social media.</p>
+    </div>
+
+
+    <div class="input-group">
+      <div class="input-label">
+        Number of practitioners
+        <span class="input-value" id="prac-out">2</span>
+      </div>
+      <input type="range" id="prac" min="1" max="10" step="1" value="2">
+      <p class="input-desc">Each additional practitioner increases enquiry volume and potential revenue recovered.</p>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Current response time
+        <span class="input-value" id="rt-out">Next day</span>
+      </div>
+      <input type="range" id="rt" min="0" max="3" step="1" value="2">
+      <p class="input-desc">How long before a new patient enquiry receives a personalised response.</p>
+    </div>
+
+  <!-- Results panel -->
+  <div class="results-panel">
+    <p class="panel-title">Revenue analysis</p>
+
+    <div class="metric-grid" id="metric-grid"></div>
+
+    <div class="breakdown">
+      <p class="breakdown-title">Calculation breakdown</p>
+      <div id="breakdown-rows"></div>
+    </div>
+
+    <div class="verdict" id="verdict"></div>
+    
+
+    <div class="cta-row">
+      <button class="btn btn-primary" onclick="window.print()">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M3 4V2h8v2M3 10H2a1 1 0 01-1-1V6a1 1 0 011-1h10a1 1 0 011 1v3a1 1 0 01-1 1h-1M3 8h8v4H3V8z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Print / Save PDF
+      </button>
+      <a class="btn btn-secondary" href="https://flowstateau.com" target="_blank">
+        Learn more
+        <svg viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Chart panel -->
+  <div class="results-panel" id="chart-panel">
+    <p class="panel-title">Revenue over 12 months</p>
+    <div style="position:relative;height:260px;width:100%"><canvas id="roi-chart"></canvas></div>
+    <div style="display:flex;gap:1.5rem;margin-top:14px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:3px;background:#EF4444;display:inline-block;border-radius:2px"></span><span style="font-size:11px;color:#64748B">Revenue lost (without Flowstate)</span></div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:3px;background:#10B981;display:inline-block;border-radius:2px"></span><span style="font-size:11px;color:#64748B">Revenue recovered (with Flowstate)</span></div>
+    </div>
+  </div>
+</div>
+
+  <p class="assumptions">
+    Assumptions: 35% enquiry-to-patient conversion rate · 5% minimum leakage rate with Flowstate · Leakage rates by response time: under 5 min = 5%, 1 hr = 15%, next day = 35%, 2+ days = 55% · Based on published dental industry data and Flowstate pilot results.
+  </p>
+
+</div>
+
+<script>
+let roiChart = null;
+
+const apvEl = document.getElementById('apv');
+const enqEl = document.getElementById('enq');
+const rtEl  = document.getElementById('rt');
+const tierEl = document.getElementById('tier');
+
+const rtLabels   = ['Under 5 minutes','Within 1 hour','Next day','2 or more days'];
+const rtLeakage  = [0.05, 0.15, 0.35, 0.55];
+const tierLabels = ['$800/mo','$1,000/mo','$1,200/mo'];
+const tierCosts  = [800, 1000, 1200];
+const setupFee   = 2000;
+const convRate   = 0.35;
+const newLeakRate = 0.05;
+
+function fmt(n){ return '$' + Math.round(n).toLocaleString('en-AU'); }
+function fmtK(n){ return n >= 1000 ? '$' + (Math.round(n/100)*100/1000).toFixed(0) + 'k' : fmt(n); }
+
+function calc(){
+  const apv  = parseInt(apvEl.value);
+  const pracRaw = parseInt(document.getElementById('prac').value);
+  const enq  = parseInt(enqEl.value) * pracRaw;
+  const rt   = parseInt(rtEl.value);
+  const tier = 0;
+
+  document.getElementById('apv-out').textContent  = fmt(apv);
+  document.getElementById('prac-out').textContent = pracRaw;
+  document.getElementById('enq-out').textContent  = enq;
+  document.getElementById('rt-out').textContent   = rtLabels[rt];
+
+  const leakRate         = rtLeakage[rt];
+  const weeklyLeaked     = Math.round(enq * leakRate);
+  const weeklyAfter      = Math.round(enq * newLeakRate);
+  const weeklyRecovered  = Math.max(0, weeklyLeaked - weeklyAfter);
+  const weeklyRev        = weeklyRecovered * convRate * apv;
+  const monthlyRev       = Math.round(weeklyRev * 4.3);
+  const annualRev        = monthlyRev * 12;
+  const monthlyCost      = tierCosts[0];
+  const annualCost       = monthlyCost * 12 + setupFee;
+  const annualNet        = annualRev - annualCost;
+  const roi              = annualCost > 0 ? Math.round((annualNet / annualCost) * 100) : 0;
+  const breakEvenMonths  = monthlyRev > 0 ? (monthlyCost / monthlyRev).toFixed(1) : '–';
+  const roiClass         = roi > 300 ? 'green' : roi > 100 ? 'amber' : 'red';
+  const roiLabel         = roi > 300 ? 'Strong ROI' : roi > 100 ? 'Positive ROI' : 'Low ROI';
+
+  const monthlyLost = Math.round(weeklyLeaked * convRate * apv * 4.3);
+  const annualLost  = monthlyLost * 12;
+
+  document.getElementById('metric-grid').innerHTML = `
+    <div class="metric-card" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px 16px;">
+      <div class="metric-label" style="font-size:11px;color:#FCA5A5;margin-bottom:4px;">Currently losing per month</div>
+      <div class="metric-value" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:#FCA5A5;line-height:1;">${fmtK(monthlyLost)}</div>
+    </div>
+    <div class="metric-card" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px 16px;">
+      <div class="metric-label" style="font-size:11px;color:#FCA5A5;margin-bottom:4px;">Currently losing per year</div>
+      <div class="metric-value" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:#FCA5A5;line-height:1;">${fmtK(annualLost)}</div>
+    </div>
+    <div class="metric-card primary">
+      <div class="metric-label">Monthly revenue recovered</div>
+      <div class="metric-value">${fmtK(monthlyRev)}</div>
+    </div>
+    <div class="metric-card primary">
+      <div class="metric-label">Annual revenue recovered</div>
+      <div class="metric-value">${fmtK(annualRev)}</div>
+    </div>
+    <div class="metric-card secondary">
+      <div class="metric-label">Break-even point</div>
+      <div class="metric-value">${parseFloat(breakEvenMonths) < 1 ? '< 1 mo' : breakEvenMonths + ' mo'}</div>
+    </div>
+  `;
+
+  document.getElementById('breakdown-rows').innerHTML = `
+    <div class="breakdown-row">
+      <span class="breakdown-key">Weekly enquiries</span>
+      <span class="breakdown-val">${enq}</span>
+    </div>
+    <div class="breakdown-row" style="color:#FCA5A5">
+      <span class="breakdown-key" style="color:#FCA5A5">Currently lost (${Math.round(leakRate*100)}% leak rate — ${rtLabels[rt].toLowerCase()})</span>
+      <span class="breakdown-val" style="color:#FCA5A5">${weeklyLeaked}/week = ${fmtK(monthlyLost)}/mo</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-key">After Flowstate (5% leak rate)</span>
+      <span class="breakdown-val">${weeklyAfter}/week</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-key">Leads recovered per week</span>
+      <span class="breakdown-val">${weeklyRecovered}</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-key">× 35% conversion × ${fmt(apv)} per patient</span>
+      <span class="breakdown-val">${fmtK(weeklyRev)}/week</span>
+    </div>
+    <div class="breakdown-row total">
+      <span class="breakdown-key">Net annual gain</span>
+      <span class="breakdown-val">${fmtK(annualNet)} <span class="roi-badge ${roiClass}">${roi}% ROI · ${roiLabel}</span></span>
+    </div>
+  `;
+
+  const verdictText = roi > 300
+    ? `At a response time of <strong>${rtLabels[rt].toLowerCase()}</strong>, an estimated <strong>${Math.round(leakRate*100)}%</strong> of inbound enquiries don't convert — most because the patient has already moved on before receiving a reply. Based on your inputs, that equates to approximately <strong>${fmtK(annualRev)}</strong> in unrealised revenue per year. This calculation assumes a 35% enquiry-to-patient conversion rate and a 5% residual leakage rate with automated follow-up in place.`
+    : roi > 100
+    ? `At a response time of <strong>${rtLabels[rt].toLowerCase()}</strong>, an estimated <strong>${Math.round(leakRate*100)}%</strong> of enquiries go uncontacted in time to retain them. Based on your inputs, approximately <strong>${fmtK(annualRev)}</strong> in annual revenue is potentially recoverable through faster, consistent follow-up. The 35% conversion rate and 5% residual leakage assumption are based on industry averages for practices with automated response systems.`
+    : `At this enquiry volume and patient value, the estimated revenue impact is modest. This typically applies to lower-volume practices or those already responding within 5 minutes. The 35% conversion rate used here is a conservative industry average — your actual result may vary based on treatment type and referral mix.`;
+
+  document.getElementById('verdict').innerHTML = `
+    <div class="verdict-title">Analysis</div>
+    <div class="verdict-body">${verdictText}</div>
+  `;
+
+  const pitchLine = weeklyRecovered > 0
+    ? `"Based on your numbers — <strong>${weeklyRecovered} recovered leads per week</strong> at <strong>${fmt(apv)}</strong> per patient. That's <strong>${fmtK(monthlyRev)} per month</strong> in revenue that currently walks out the door. The system costs <strong>${fmt(monthlyCost)} per month</strong>. You break even in <strong>${breakEvenMonths} months</strong>. Does that math make sense?"`
+    : `"Your current response time is already fast — great position to be in. The value here is consistency: ensuring that 5-minute response happens on weekends, after hours, and during your busiest periods automatically."`;
+
+  
+}
+
+['apv','enq','rt','prac'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calc);
+});
+
+calc();
+</script>
+</body>
+</html>
