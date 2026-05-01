@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowstate — Revenue Recovery Calculator</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B2A;
+  --blue:#2563EB;
+  --sky:#38BDF8;
+  --emerald:#10B981;
+  --offwhite:#F8FAFC;
+  --charcoal:#1E293B;
+  --slate:#475569;
+  --border:#E2E8F0;
+  --red:#EF4444;
+  --amber:#F59E0B;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'JetBrains Mono','Fira Mono','Consolas',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--navy);color:#F8FAFC;min-height:100vh;-webkit-font-smoothing:antialiased;padding:0}
+
+/* NAV */
+.nav{background:rgba(13,27,42,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:0.9rem;font-weight:600;color:#F8FAFC;text-decoration:none}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald)}
+.nav-cta{background:var(--emerald);color:#fff;font-size:0.8rem;font-weight:500;padding:0.5rem 1.1rem;border-radius:6px;text-decoration:none;transition:background 0.2s}
+.nav-cta:hover{background:#0ea271}
+
+/* HEADER */
+.header{max-width:860px;margin:0 auto;padding:3.5rem 2rem 2rem;text-align:center}
+.header-eyebrow{font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--sky);margin-bottom:1rem}
+.header h1{font-size:clamp(1.75rem,4vw,2.6rem);font-weight:300;color:#F8FAFC;line-height:1.2;margin-bottom:0.75rem;letter-spacing:-0.02em}
+.header h1 strong{font-weight:600}
+.header p{font-size:0.95rem;color:#64748B;line-height:1.7;max-width:540px;margin:0 auto}
+
+/* MAIN LAYOUT */
+.calc-wrap{max-width:1140px;margin:0 auto;padding:1.5rem 2rem 4rem;display:grid;grid-template-columns:380px 1fr;gap:1.5rem;align-items:start}
+@media(max-width:860px){.calc-wrap{grid-template-columns:1fr}}
+
+/* PANELS */
+.panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.75rem}
+.panel-title{font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#38BDF8;margin-bottom:1.5rem}
+
+/* INPUTS */
+.input-group{margin-bottom:1.5rem}
+.input-group:last-child{margin-bottom:0}
+.input-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem}
+.input-label{font-size:0.8rem;font-weight:500;color:#94A3B8;display:flex;align-items:center;gap:6px}
+.input-val{font-family:var(--mono);font-size:0.8rem;font-weight:500;color:#38BDF8}
+.tooltip-btn{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#64748B;font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;position:relative}
+.tooltip-btn:hover .tooltip-box{display:block}
+.tooltip-box{display:none;position:absolute;left:22px;top:-4px;width:200px;background:#1E293B;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;font-size:11px;color:#94A3B8;line-height:1.5;z-index:50;font-family:var(--sans)}
+
+/* RANGE SLIDER */
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);border:2px solid #F8FAFC;cursor:pointer;transition:transform 0.15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--blue);border:2px solid #F8FAFC;cursor:pointer}
+
+/* SELECT */
+select{width:100%;background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#F8FAFC;font-size:0.85rem;padding:0.6rem 0.875rem;outline:none;cursor:pointer;font-family:var(--sans)}
+select:focus{border-color:var(--blue)}
+
+/* RIGHT COLUMN */
+.right-col{display:flex;flex-direction:column;gap:1.5rem}
+
+/* INSIGHT LINE */
+.insight{background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-left:3px solid var(--sky);border-radius:0 10px 10px 0;padding:1rem 1.25rem}
+.insight-label{font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--sky);margin-bottom:0.4rem}
+.insight-text{font-size:0.9rem;color:#CBD5E1;line-height:1.6}
+.insight-text strong{color:#F8FAFC;font-weight:600}
+
+/* METRICS GRID */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.metric-card{border-radius:10px;padding:1.1rem 1.25rem}
+.metric-card.red{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2)}
+.metric-card.blue{background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.25)}
+.metric-card.green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)}
+.metric-card.neutral{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
+.metric-label{font-size:0.68rem;font-weight:500;color:#64748B;margin-bottom:0.35rem;line-height:1.4}
+.metric-card.red .metric-label{color:#FCA5A5}
+.metric-card.blue .metric-label{color:#93C5FD}
+.metric-card.green .metric-label{color:#6EE7B7}
+.metric-val{font-family:var(--mono);font-size:1.5rem;font-weight:500;color:#F8FAFC;line-height:1}
+.metric-card.red .metric-val{color:#FCA5A5}
+.metric-card.blue .metric-val{color:#38BDF8}
+.metric-card.green .metric-val{color:#10B981}
+
+/* ROI BADGE */
+.roi-row{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-top:0.25rem}
+.roi-badge{font-size:0.7rem;font-weight:600;padding:3px 10px;border-radius:99px;letter-spacing:0.04em}
+.roi-badge.green{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3)}
+.roi-badge.amber{background:rgba(245,158,11,0.15);color:#FCD34D;border:1px solid rgba(245,158,11,0.3)}
+.roi-badge.red{background:rgba(239,68,68,0.15);color:#FCA5A5;border:1px solid rgba(239,68,68,0.3)}
+
+/* CONFIDENCE RANGES */
+.confidence{padding:1.25rem}
+
+
+
+
+
+
+
+
+
+
+
+/* BREAKDOWN */
+.breakdown-row{display:flex;justify-content:space-between;align-items:flex-start;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-key{color:#475569;line-height:1.4;max-width:65%}
+.breakdown-val{font-family:var(--mono);font-size:0.75rem;color:#94A3B8;text-align:right}
+.breakdown-row.highlight .breakdown-key{color:#F8FAFC;font-weight:500}
+.breakdown-row.highlight .breakdown-val{color:#38BDF8;font-weight:500}
+.breakdown-row.negative .breakdown-key{color:#FCA5A5}
+.breakdown-row.negative .breakdown-val{color:#FCA5A5}
+
+/* CHART */
+
+
+
+
+
+
+/* ACTIONS */
+.actions{display:flex;gap:0.75rem;flex-wrap:wrap;padding-top:0.25rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0.625rem 1.25rem;border-radius:8px;font-size:0.8rem;font-weight:500;cursor:pointer;border:none;text-decoration:none;transition:all 0.2s;font-family:var(--sans)}
+.btn-primary{background:var(--emerald);color:#fff}
+.btn-primary:hover{background:#0ea271;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:#64748B;border:1px solid rgba(255,255,255,0.08)}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.2);color:#94A3B8}
+
+/* FORMULA NOTE */
+.formula-note{font-size:0.72rem;color:#334155;line-height:1.7;border-top:1px solid rgba(255,255,255,0.05);padding-top:1.25rem;margin-top:0.5rem}
+.formula-note a{color:#475569;text-decoration:underline}
+
+
+/* BEFORE/AFTER COMPARISON */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.06)}
+.ba-col{padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0.875rem}
+.ba-col.before{background:rgba(239,68,68,0.06)}
+.ba-col.after{background:rgba(16,185,129,0.06)}
+.ba-header{display:flex;align-items:center;gap:0.5rem;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding-bottom:0.75rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ba-col.before .ba-header{color:#FCA5A5}
+.ba-col.after .ba-header{color:#6EE7B7}
+.ba-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ba-col.before .ba-dot{background:#EF4444}
+.ba-col.after .ba-dot{background:#10B981}
+.ba-row{display:flex;flex-direction:column;gap:2px}
+.ba-label{font-size:0.7rem;color:#475569}
+.ba-val{font-family:var(--mono);font-size:1.1rem;font-weight:500}
+.ba-col.before .ba-val{color:#FCA5A5}
+.ba-col.after .ba-val{color:#10B981}
+
+/* BREAK-EVEN BAR */
+.be-bar-wrap{margin-top:0.75rem}
+.be-bar-track{height:8px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;position:relative}
+.be-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#10B981,#38BDF8);transition:width 0.4s ease}
+.be-bar-labels{display:flex;justify-content:space-between;margin-top:0.5rem}
+.be-bar-label{font-size:0.68rem;color:#334155;font-family:var(--mono)}
+.be-bar-marker{position:absolute;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:#10B981;border:2px solid #0D1B2A;transition:left 0.4s ease;margin-left:-6px}
+.be-context{font-size:0.75rem;color:#64748B;margin-top:0.625rem;line-height:1.5}
+.be-context strong{color:#10B981}
+
+/* PRINT */
+@media print{
+  body{background:#fff;color:#000}
+  .nav,.actions,.nav-cta{display:none}
+  .panel{border:1px solid #E2E8F0;background:#fff}
+  .metric-card{border:1px solid #E2E8F0;background:#F8FAFC}
+  .metric-val,
+  .insight{background:#F0FDF4;border-color:#BBF7D0}
+  .header p,.insight-text,.breakdown-key,.metric-label,
+  .formula-note{color:#6B7280}
+  
+  .chart-wrap,
+}
+
+@media(max-width:560px){
+  .metrics-grid{grid-template-columns:1fr}
+  
+  
+  .calc-wrap{padding:1rem 1rem 3rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="https://flowstateau.com">
+    <div class="nav-dot"></div>
+    Flowstate Agency
+  </a>
+  <a class="nav-cta" href="https://calendly.com/staff-flowstateau/free-automation-audit" target="_blank">Book a free call</a>
+</nav>
+
+<div class="header">
+  <p class="header-eyebrow">Revenue Recovery Analysis</p>
+  <h1>How much is slow follow-up<br><strong>costing your practice?</strong></h1>
+  <p>Enter your practice details below. This model uses published dental industry conversion data to estimate your current revenue leakage and potential recovery.</p>
+</div>
+
+<div class="calc-wrap">
+
+  <!-- LEFT: INPUTS -->
+  <div class="panel">
+    <p class="panel-title">Practice inputs</p>
+
+    <div class="input-group">
+      <div class="input-top">
+        <span class="input-label">
+          Average patient value (AUD)
+          
+          </span>
+        </span>
+        <span class="input-val" id="apv-out">$1,200</span>
+      </div>
+      <input type="range" id="apv" min="300" max="5000" step="50" value="1200">
+    </div>
+
+    <div class="input-group">
+      <div class="input-top">
+        <span class="input-label">
+          Weekly enquiries
+          
+          </span>
+        </span>
+        <span class="input-val" id="enq-out">20 / week</span>
+      </div>
+      <input type="range" id="enq" min="5" max="150" step="1" value="30">
+    </div>
+
+    <div class="input-group">
+      <div class="input-top">
+        <span class="input-label">
+          Number of practitioners
+          
+          </span>
+        </span>
+        <span class="input-val" id="prac-out">2 chairs</span>
+      </div>
+      <input type="range" id="prac" min="1" max="10" step="1" value="1">
+    </div>
+
+    <div class="input-group">
+      <div class="input-top">
+        <span class="input-label">
+          Current response time
+          
+          </span>
+        </span>
+      </div>
+      <select id="rt">
+        <option value="0.95">Under 5 minutes</option>
+        <option value="0.78">Around 1 hour</option>
+        <option value="0.52" selected>Next business day</option>
+        <option value="0.27">2 or more days</option>
+      </select>
+    </div>
+
+    <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.05)">
+      <p class="panel-title" style="margin-bottom:0.875rem">Model assumptions</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem">
+          <span style="color:#334155">Max inbound conversion rate</span>
+          <span style="font-family:var(--mono);color:#475569">38%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem">
+          <span style="color:#334155">Flowstate retention factor</span>
+          <span style="font-family:var(--mono);color:#475569">95%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem">
+          <span style="color:#334155">Setup fee (one-off)</span>
+          <span style="font-family:var(--mono);color:#475569">$1,000</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem">
+          <span style="color:#334155">Monthly fee</span>
+          <span style="font-family:var(--mono);color:#475569">$1,200</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.05)">
+      <p class="panel-title" style="margin-bottom:0.875rem">Calculation breakdown</p>
+      <div id="breakdown"></div>
+      
+    </div>
+  </div>
+
+  <!-- RIGHT: OUTPUTS -->
+  <div class="right-col">
+
+    <!-- Insight line -->
+    <div class="insight">
+      <p class="insight-label">Diagnostic insight</p>
+      <p class="insight-text" id="insight-text">Calculating...</p>
+    </div>
+
+    <!-- BEFORE / AFTER -->
+    <div class="panel" style="padding:1.5rem">
+      <p class="panel-title">Before &amp; after — monthly snapshot</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.06)">
+        <div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0.875rem;background:rgba(239,68,68,0.06)">
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#FCA5A5;padding-bottom:0.75rem;border-bottom:1px solid rgba(255,255,255,0.06)">
+            <span style="width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0;display:inline-block"></span>Without Flowstate
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:0.7rem;color:#475569">Patients converting</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:#FCA5A5" id="ba-cp">—</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:0.7rem;color:#475569">Revenue captured</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:#FCA5A5" id="ba-rev-before">—</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:0.7rem;color:#475569">Lost per month</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:#FCA5A5" id="ba-lost">—</div>
+          </div>
+        </div>
+        <div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0.875rem;background:rgba(16,185,129,0.06)">
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6EE7B7;padding-bottom:0.75rem;border-bottom:1px solid rgba(255,255,255,0.06)">
+            <span style="width:7px;height:7px;border-radius:50%;background:#10B981;flex-shrink:0;display:inline-block"></span>With Flowstate
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:0.7rem;color:#475569">Patients converting</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:#10B981" id="ba-fp">—</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:0.7rem;color:#475569">Revenue captured</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:#10B981" id="ba-rev-after">—</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:0.7rem;color:#475569">Additional per month</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:#10B981" id="ba-gain">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BREAK-EVEN BAR -->
+    <div class="panel" style="padding:1.5rem">
+      <p class="panel-title">Break-even timeline</p>
+      <div style="margin-top:0.75rem">
+        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;position:relative">
+          <div id="be-fill" style="height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#10B981,#38BDF8);transition:width 0.4s ease"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
+          <span style="font-size:0.68rem;color:#334155;font-family:var(--mono)">M1</span>
+          <span style="font-size:0.68rem;color:#334155;font-family:var(--mono)">M6</span>
+          <span style="font-size:0.68rem;color:#334155;font-family:var(--mono)">M12</span>
+        </div>
+      </div>
+      <p id="be-context" style="font-size:0.75rem;color:#64748B;margin-top:0.625rem;line-height:1.5">Calculating...</p>
+    </div>
+
+    <!-- Metric cards -->
+    <div class="panel" style="padding:1.5rem">
+      <p class="panel-title">Revenue analysis</p>
+      <div class="metrics-grid">
+        <div class="metric-card red">
+          <div class="metric-label">Revenue left on the table<br>(per month)</div>
+          <div class="metric-val" id="m-lost-mo">—</div>
+        </div>
+        <div class="metric-card red">
+          <div class="metric-label">Revenue left on the table<br>(per year)</div>
+          <div class="metric-val" id="m-lost-yr">—</div>
+        </div>
+        <div class="metric-card blue">
+          <div class="metric-label">Recovered per month<br>(with Flowstate)</div>
+          <div class="metric-val" id="m-rec-mo">—</div>
+        </div>
+        <div class="metric-card green">
+          <div class="metric-label">Annual net gain<br>(after all fees)</div>
+          <div class="metric-val" id="m-ang">—</div>
+          <div class="roi-row">
+            <span id="roi-pct" style="font-family:var(--mono);font-size:0.75rem;color:#64748B"></span>
+            <span id="roi-badge" class="roi-badge"></span>
+          </div>
+        </div>
+        <div class="metric-card neutral">
+          <div class="metric-label">Break-even</div>
+          <div class="metric-val" id="m-be">—</div>
+        </div>
+        <div class="metric-card neutral">
+          <div class="metric-label">Patients recovered<br>per month</div>
+          <div class="metric-val" id="m-pat">—</div>
+        </div>
+      </div>
+    </div>
+
+
+<!-- Actions -->
+    <div class="actions">
+      <a class="btn btn-primary" href="https://calendly.com/staff-flowstateau/free-automation-audit" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v6l4 2M13 7A6 6 0 111 7a6 6 0 0112 0z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Book a free audit call
+      </a>
+      <button class="btn btn-ghost" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4V2h8v2M3 9H2a1 1 0 01-1-1V6a1 1 0 011-1h10a1 1 0 011 1v2a1 1 0 01-1 1h-1M3 7h8v5H3V7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Print / Save PDF
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── FORMAT HELPERS ────────────────────────────────────────────────────────────
+function fmtAUD(v) {
+  const abs = Math.abs(v);
+  const sign = v < 0 ? '-' : '';
+  if (abs >= 1000000) return sign + '$' + (abs/1000000).toFixed(1) + 'M';
+  if (abs >= 10000)   return sign + '$' + Math.round(abs/1000) + 'k';
+  if (abs >= 1000)    return sign + '$' + (abs/1000).toFixed(1) + 'k';
+  return sign + '$' + Math.round(abs).toLocaleString('en-AU');
+}
+function fmtFull(v) {
+  return (v < 0 ? '-' : '') + '$' + Math.abs(Math.round(v)).toLocaleString('en-AU');
+}
+
+// ── CORE CALCULATION ──────────────────────────────────────────────────────────
+function calc() {
+  const apv  = parseInt(document.getElementById('apv').value);
+  const enq  = parseInt(document.getElementById('enq').value);
+  const prac = parseInt(document.getElementById('prac').value);
+  const rf   = parseFloat(document.getElementById('rt').value);
+  const enqAdj = enq * prac;
+  const rtLabel = document.getElementById('rt').options[document.getElementById('rt').selectedIndex].text;
+
+  // Update display values
+  document.getElementById('apv-out').textContent  = '$' + apv.toLocaleString('en-AU');
+  document.getElementById('enq-out').textContent  = enq + ' / week';
+  document.getElementById('prac-out').textContent = prac + (prac === 1 ? ' chair' : ' chairs');
+
+  // ── MATH MODEL ──────────────────────────────────────────────
+  const monthlyEnq  = enqAdj * 4.33;                    // Step 1
+  const baseline    = monthlyEnq * 0.38;              // Step 2
+  const currentCP   = baseline * rf;                  // Step 4
+  const flowstateCP = baseline * 0.95;                // Step 5
+  const AR          = flowstateCP - currentCP;        // Step 6 — additional recovered
+  const MR          = AR * apv;                       // Step 7 — monthly revenue recovered
+
+  const setupFee    = 1000;
+  const monthlyFee  = 1200;
+  const annualCost  = setupFee + (monthlyFee * 12);   // $5,564
+  const ANG         = (MR * 12) - annualCost;         // Step 8
+  const ROI         = (ANG / annualCost) * 100;       // Step 9
+
+  // Lost revenue (what they're currently missing vs full potential)
+  const lostPerMonth = (flowstateCP - currentCP) * apv;  // same as MR
+  const lostPerYear  = lostPerMonth * 12;
+
+  // Break-even
+  const breakEvenMo = MR > 0 ? (annualCost / (MR * 12)) * 12 : null;
+
+  // ── INSIGHT LINE ─────────────────────────────────────────────
+  const disengaging = Math.round(AR);
+  document.getElementById('insight-text').innerHTML =
+    `Based on your current response timing, approximately <strong>${disengaging} potential patients per month</strong> are likely disengaging before your team responds. At <strong>$${apv.toLocaleString('en-AU')} per patient</strong>, that represents <strong>${fmtFull(lostPerMonth)}/month</strong> in unrealised revenue.`;
+
+  // ── METRIC CARDS ─────────────────────────────────────────────
+  document.getElementById('m-lost-mo').textContent = fmtAUD(lostPerMonth);
+  document.getElementById('m-lost-yr').textContent = fmtAUD(lostPerYear);
+  document.getElementById('m-rec-mo').textContent  = fmtAUD(MR);
+  document.getElementById('m-ang').textContent     = fmtAUD(ANG);
+  document.getElementById('m-be').textContent      = breakEvenMo ? (breakEvenMo < 1 ? '< 1 mo' : breakEvenMo.toFixed(1) + ' mo') : 'N/A';
+  document.getElementById('m-pat').textContent     = Math.round(AR) + ' / mo';
+
+  // ── BEFORE / AFTER ───────────────────────────────────────────
+  document.getElementById('ba-cp').textContent       = currentCP.toFixed(1) + ' / mo';
+  document.getElementById('ba-rev-before').textContent = fmtAUD(currentCP * apv);
+  document.getElementById('ba-lost').textContent     = fmtAUD(lostPerMonth);
+  document.getElementById('ba-fp').textContent       = flowstateCP.toFixed(1) + ' / mo';
+  document.getElementById('ba-rev-after').textContent = fmtAUD(flowstateCP * apv);
+  document.getElementById('ba-gain').textContent     = '+' + fmtAUD(MR);
+
+  // ── BREAK-EVEN BAR ────────────────────────────────────────────
+  const beMo = MR > monthlyFee ? (annualCost / MR) : null;
+  const bePct = beMo ? Math.min((beMo / 12) * 100, 100) : 100;
+  document.getElementById('be-fill').style.width    = bePct + '%';
+  
+  if (beMo && beMo <= 12) {
+    const beRound = beMo.toFixed(1);
+    document.getElementById('be-context').innerHTML =
+      `At your current inputs, Flowstate pays for itself in <strong>month ${Math.ceil(beMo)}</strong> (${beRound} months). Every month after that is pure net gain.`;
+  } else if (beMo && beMo > 12) {
+    document.getElementById('be-context').innerHTML =
+      `Break-even falls outside 12 months at these inputs. Consider increasing enquiry volume or patient value to improve the return.`;
+  } else {
+    document.getElementById('be-context').innerHTML =
+      `At this response speed, monthly recovery does not exceed the service cost. Flowstate is most impactful for practices responding slower than 1 hour.`;
+  }
+
+  // ROI badge
+  const roiPct = document.getElementById('roi-pct');
+  const roiBadge = document.getElementById('roi-badge');
+  roiPct.textContent = Math.round(ROI) + '% ROI';
+  if (ROI >= 200) {
+    roiBadge.className = 'roi-badge green'; roiBadge.textContent = 'Strong return';
+  } else if (ROI >= 50) {
+    roiBadge.className = 'roi-badge amber'; roiBadge.textContent = 'Moderate return';
+  } else {
+    roiBadge.className = 'roi-badge red'; roiBadge.textContent = 'Low return';
+  }
+
+  // ── CONFIDENCE RANGES ────────────────────────────────────────
+
+  // ── BREAKDOWN ────────────────────────────────────────────────
+  document.getElementById('breakdown').innerHTML = `
+    <div class="breakdown-row"><span class="breakdown-key">Weekly enquiries (${enq} × ${prac} practitioners)</span><span class="breakdown-val">${enqAdj}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Monthly enquiries (× 4.33)</span><span class="breakdown-val">${monthlyEnq.toFixed(1)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Baseline conversion opportunity (× 38%)</span><span class="breakdown-val">${baseline.toFixed(1)} patients</span></div>
+    <div class="breakdown-row negative"><span class="breakdown-key">Currently captured — ${rtLabel} retention (× ${rf})</span><span class="breakdown-val">${currentCP.toFixed(1)} patients/mo</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">With Flowstate — 95% retention</span><span class="breakdown-val">${flowstateCP.toFixed(1)} patients/mo</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Additional patients recovered</span><span class="breakdown-val">${AR.toFixed(1)} patients/mo</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Monthly revenue recovered (× $${apv.toLocaleString('en-AU')})</span><span class="breakdown-val">${fmtFull(MR)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Annual gross recovery (× 12)</span><span class="breakdown-val">${fmtFull(MR * 12)}</span></div>
+    <div class="breakdown-row negative"><span class="breakdown-key">Annual cost ($2,000 setup + $297 × 12)</span><span class="breakdown-val">−${fmtFull(annualCost)}</span></div>
+    <div class="breakdown-row highlight"><span class="breakdown-key">Annual net gain</span><span class="breakdown-val">${fmtFull(ANG)}</span></div>
+    <div class="breakdown-row highlight"><span class="breakdown-key">Return on investment</span><span class="breakdown-val">${Math.round(ROI)}%</span></div>
+  `;
+
+  // ── 12-MONTH CHART ───────────────────────────────────────────
+  // Single line: cumulative net position with Flowstate
+  // Month 1 starts negative (setup fee), crosses zero at break-even
+  const gainData = Array.from({length:12}, (_, i) => {
+    const grossRecovered = MR * (i + 1);
+    const totalCost = setupFee + monthlyFee * (i + 1);
+    return grossRecovered - totalCost;
+  });
+  requestAnimationFrame(() => drawChart(gainData));
+}
+
+// ── EVENT LISTENERS ───────────────────────────────────────────────────────────
+['apv','enq','prac'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calc);
+});
+document.getElementById('rt').addEventListener('change', calc);
+window.addEventListener('resize', calc);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+calc();
+</script>
+</body>
+</html>
